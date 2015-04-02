@@ -1,0 +1,18 @@
+{
+  "name": "adapt-audio",
+  "version": "0.0.1",
+  "homepage": "https://github.com/cgkineo/adapt-audio",
+  "authors": [
+    "Chris Steele <chris.steele@kineo.com>"
+  ],
+  "displayName" : "Audio",
+  "extension" : "audio",
+  "description": "An extension which provides basic audio playback capability",
+  "main": "/js/adapt-audio.js",
+  "keywords": [
+    "adapt-plugin",
+    "adapt-extension"
+  ],
+  "license": "GPLv3",
+  "targetAttribute": "_audio"
+}
