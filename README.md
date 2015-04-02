@@ -20,12 +20,9 @@ Add audio capability to any part of any template by specifying the audio-control
 The context (this) should have a corresponding _audio attribute in the relevant part of the components JSON with the following format:
 
 "_audio": {
-  ["autoplay":true|false|"inview",]
 	"ogg":"course/en/audio/audio.ogg",
 	"mp3":"course/en/audio/audio.mp3"
 }
-
-NEW: specify the autoplay attribute and set it to true for audio to play on component creation or "inview" to play audio when the component comes into view. N.B. this will no work on mobile/tablet devices.
 
 The audio-controls partial provides the UI which consists of a single play/pause toggle button.
 
