@@ -85,7 +85,7 @@ Adapt.trigger('audio:stop');
 ```
 Equally, when Tutor is closed any audio associated with it should be stopped.
 
-Modify the Tutor Handlebars template to include the audio controls, e.g:
+Modify the [Notify Handlebars template](https://github.com/adaptlearning/adapt_framework/blob/master/src/core/templates/notify.hbs) to include the audio controls by adding the following handlebars expression to it:
 ```
 {{> audio-controls feedbackAudio}}
 ```
