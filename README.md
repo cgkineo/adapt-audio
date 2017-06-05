@@ -42,43 +42,44 @@ If including the audio extension in multiple components you can avoid repetition
 Using with other extensions
 ===========================
 
-It is possible to utilise this extension with other extensions. For example, to enable Tutor to deliver audio with question feedback customise the QuestionView class to add additional properties to the model when feedback is set up:
+It is possible to utilise this extension with other extensions. For example, to enable Tutor to deliver audio with question feedback, customise core/js/models/questionModel.js to add additional properties to the model when feedback is set up:
 ```
 setupCorrectFeedback: function() {
-    this.model.set({
+    this.set({
         ...
-        feedbackAudio: this.model.get("_feedbackAudio") ? this.model.get("_feedbackAudio").correct : {}
+        feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio").correct : {}
     });
 }
 
 setupPartlyCorrectFeedback: function() {
-    if (this.model.get('_attemptsLeft') === 0 || !this.model.get('_feedback')._partlyCorrect.notFinal) {
-        this.model.set({
+    if (this.get('_attemptsLeft') === 0 || !this.get('_feedback')._partlyCorrect.notFinal) {
+        this.set({
             ...
-            feedbackAudio: this.model.get("_feedbackAudio") ? this.model.get("_feedbackAudio")._partlyCorrect.final : {}
+            feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio")._partlyCorrect.final : {}
         });
     } else {
-        this.model.set({
+        this.set({
             ...
-            feedbackAudio: this.model.get("_feedbackAudio") ? this.model.get("_feedbackAudio")._partlyCorrect.notFinal : {}
+            feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio")._partlyCorrect.notFinal : {}
         });
     }
 }
 
 setupIncorrectFeedback: function() {
-    if (this.model.get('_attemptsLeft') === 0 || !this.model.get('_feedback')._incorrect.notFinal) {
-        this.model.set({
+    if (this.get('_attemptsLeft') === 0 || !this.get('_feedback')._incorrect.notFinal) {
+        this.set({
             ...
-            feedbackAudio: this.model.get("_feedbackAudio") ? this.model.get("_feedbackAudio")._incorrect.final : {}
+            feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio")._incorrect.final : {}
         });
     } else {
-        this.model.set({
+        this.set({
             ...
-            feedbackAudio: this.model.get("_feedbackAudio") ? this.model.get("_feedbackAudio")._incorrect.notFinal : {}
+            feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio")._incorrect.notFinal : {}
         });
     }
 }
 ```
+Note: if you are using a version of Adapt older than 2.0.10 there will be no questionModel.js - you will instead need to modify the functions in core/js/views/questionView.js in a similar manner - just change any references to `this.set` to `this.model.set`.
 Typically, when Tutor is invoked any audio that is playing should be stopped. To do this trigger the 'audio:stop' event on the Adapt object:
 ```
 Adapt.trigger('audio:stop');
