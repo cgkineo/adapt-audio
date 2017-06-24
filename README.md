@@ -7,18 +7,18 @@ Installation
 ============
 
 First, be sure to install the [Adapt Command Line Interface](https://github.com/cajones/adapt-cli), then from the command line run:-
-```
+```bash
 $ adapt install adapt-audio
 ```
 Usage
 =====
 
 Add audio capability to any part of any template by specifying the audio-controls partial:
-```
+```hbs
 {{> audio-controls this}}
 ```
 The context (this) should have a corresponding `_audio` attribute in the relevant part of the components JSON with the following format:
-```
+```json
 "_audio": {
 	"mp3":"course/en/audio/audio.mp3"
 }
@@ -26,12 +26,12 @@ The context (this) should have a corresponding `_audio` attribute in the relevan
 The audio-controls partial provides the UI which consists of a single play/pause toggle button.
 
 In components that will support audio, listen to the click event on the toggle button(s) by adding this to the events hash:
-```
+```js
 'click .audio-controls .icon':'onAudioCtrlsClick'
 ```
 
 Then add a handler function for this that triggers the 'audio' event on the Adapt object, passing in the current event target, e.g:
-```
+```js
 onAudioCtrlsClick: function(event) {
 	if (event) event.preventDefault();
 	Adapt.trigger('audio', event.currentTarget);
@@ -101,11 +101,11 @@ You should be able to figure out how to modify `setupPartlyCorrectFeedback` from
 Note: if you are using a version of Adapt older than 2.0.10 there will be no questionModel.js - you will instead need to modify the functions in core/js/views/questionView.js in a similar manner - just change any references to `this.set` to `this.model.set`.
 
 Modify the [Notify Handlebars template](https://github.com/adaptlearning/adapt_framework/blob/master/src/core/templates/notify.hbs) to include the audio controls by adding the following handlebars expression to it:
-```
+```hbs
 {{> audio-controls feedbackAudio}}
 ```
 Then edit [notifyView.js](https://github.com/adaptlearning/adapt_framework/blob/master/src/core/views/notifyView.js) and add the following to its events hash:
-```
+```js
 'click .audio-controls .icon':'onAudioCtrlsClick'
 ```
 Then add the matching `onAudioCtrlsClick` handler function (see above).
@@ -144,7 +144,7 @@ Finally add the `_feedbackAudio` attributes to the components JSON, e.g:
 ```
 
 Typically, when Tutor is invoked any audio that is playing should be stopped. To do this trigger the 'audio:stop' event on the Adapt object:
-```
+```js
 Adapt.trigger('audio:stop');
 ```
 Equally, when Tutor is closed any audio associated with it should be stopped - which can be done by adding the above event to `closeNotify` in [notifyView.js](https://github.com/adaptlearning/adapt_framework/blob/master/src/core/views/notifyView.js)
