@@ -42,80 +42,109 @@ If including the audio extension in multiple components you can avoid repetition
 Using with other extensions
 ===========================
 
-It is possible to utilise this extension with other extensions. For example, to enable Tutor to deliver audio with question feedback, customise core/js/models/questionModel.js to add additional properties to the model when feedback is set up:
-```
+It is possible to utilise this extension with other extensions. For example, to enable Tutor to deliver audio with question feedback, customise core/js/models/questionModel.js to add additional properties to the model when feedback is set up. For example, to have 'correct feedback' audio, take the existing `setupCorrectFeedback` function:
+
+```js
 setupCorrectFeedback: function() {
     this.set({
-        ...
-        feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio").correct : {}
+	feedbackTitle: this.get('title'),
+	feedbackMessage: this.get("_feedback") ? this.get("_feedback").correct : ""
     });
-}
-
-setupPartlyCorrectFeedback: function() {
-    if (this.get('_attemptsLeft') === 0 || !this.get('_feedback')._partlyCorrect.notFinal) {
-        this.set({
-            ...
-            feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio")._partlyCorrect.final : {}
-        });
-    } else {
-        this.set({
-            ...
-            feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio")._partlyCorrect.notFinal : {}
-        });
-    }
-}
-
+},
+```
+And modify it like so:
+```js
+setupCorrectFeedback: function() {
+    this.set({
+	feedbackTitle: this.get('title'),
+	feedbackMessage: this.get("_feedback") ? this.get("_feedback").correct : "",
+	feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio").correct : {}
+    });
+},
+```
+Similarly, for incorrect feedback audio, take the original function:
+```js
 setupIncorrectFeedback: function() {
-    if (this.get('_attemptsLeft') === 0 || !this.get('_feedback')._incorrect.notFinal) {
-        this.set({
-            ...
-            feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio")._incorrect.final : {}
-        });
+    if (this.get('_attemptsLeft') === 0 || this.get('_feedback') && !this.get('_feedback')._incorrect.notFinal) {
+	this.set({
+	    feedbackTitle: this.get('title'),
+	    feedbackMessage: this.get("_feedback") ? this.get('_feedback')._incorrect.final : ""
+	});
     } else {
-        this.set({
-            ...
-            feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio")._incorrect.notFinal : {}
-        });
+	this.set({
+	    feedbackTitle: this.get('title'),
+	    feedbackMessage: this.get("_feedback") ? this.get('_feedback')._incorrect.notFinal : ""
+	});
     }
-}
+},
 ```
+and modify it to:
+```js
+setupIncorrectFeedback: function() {
+    if (this.get('_attemptsLeft') === 0 || this.get('_feedback') && !this.get('_feedback')._incorrect.notFinal) {
+	this.set({
+	    feedbackTitle: this.get('title'),
+	    feedbackMessage: this.get("_feedback") ? this.get('_feedback')._incorrect.final : "",
+	    feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio")._incorrect.final : {}
+	});
+    } else {
+	this.set({
+	    feedbackTitle: this.get('title'),
+	    feedbackMessage: this.get("_feedback") ? this.get('_feedback')._incorrect.notFinal : "",
+	    feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio")._incorrect.notFinal : {}
+	});
+    }
+},
+```
+You should be able to figure out how to modify `setupPartlyCorrectFeedback` from the above.
+
 Note: if you are using a version of Adapt older than 2.0.10 there will be no questionModel.js - you will instead need to modify the functions in core/js/views/questionView.js in a similar manner - just change any references to `this.set` to `this.model.set`.
-Typically, when Tutor is invoked any audio that is playing should be stopped. To do this trigger the 'audio:stop' event on the Adapt object:
-```
-Adapt.trigger('audio:stop');
-```
-Equally, when Tutor is closed any audio associated with it should be stopped.
 
 Modify the [Notify Handlebars template](https://github.com/adaptlearning/adapt_framework/blob/master/src/core/templates/notify.hbs) to include the audio controls by adding the following handlebars expression to it:
 ```
 {{> audio-controls feedbackAudio}}
 ```
-As for components, listen for the click event on the toggle button and trigger the 'audio' event on the Adapt object, passing in the current event target.
+Then edit [notifyView.js](https://github.com/adaptlearning/adapt_framework/blob/master/src/core/views/notifyView.js) and add the following to its events hash:
+```
+'click .audio-controls .icon':'onAudioCtrlsClick'
+```
+Then add the matching `onAudioCtrlsClick` handler function (see above).
 
-Finally add the _feedbackAudio attributes to the components JSON, e.g:
+Next, edit adapt-contrib-tutor.js to include a `feedbackAudio` property in the `alertObject`:
+```js
+var alertObject = {
+    title: view.model.get("feedbackTitle"),
+    body: view.model.get("feedbackMessage"),
+    feedbackAudio: view.model.get("feedbackAudio")
+};
+```
+Finally add the `_feedbackAudio` attributes to the components JSON, e.g:
 ```
 "_feedbackAudio":{
   "correct":{
     "_audio": {
-      "mp3": "course/en/audio/correct.mp3",
-      "ogg": "course/en/audio/correct.ogg"
+      "mp3": "course/en/audio/correct.mp3"
     }
   },
   "_incorrect": {
     "final": {
       "_audio": {
-        "mp3": "course/en/audio/incorrect.mp3",
-        "ogg": "course/en/audio/incorrect.ogg"
+        "mp3": "course/en/audio/incorrect.mp3"
       }
     }
   },
   "_partlyCorrect": {
     "final": {
       "_audio": {
-        "mp3": "course/en/audio/partlycorrect.mp3",
-        "ogg": "course/en/audio/partlycorrect.ogg"
+        "mp3": "course/en/audio/partlycorrect.mp3"
       }
     }
   }
 }
 ```
+
+Typically, when Tutor is invoked any audio that is playing should be stopped. To do this trigger the 'audio:stop' event on the Adapt object:
+```
+Adapt.trigger('audio:stop');
+```
+Equally, when Tutor is closed any audio associated with it should be stopped - which can be done by adding the above event to `closeNotify` in [notifyView.js](https://github.com/adaptlearning/adapt_framework/blob/master/src/core/views/notifyView.js)
