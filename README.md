@@ -41,8 +41,11 @@ If including the audio extension in multiple components you can avoid repetition
 
 Using with other extensions
 ===========================
+It is possible to utilise this extension with other extensions. 
 
-It is possible to utilise this extension with other extensions. For example, to enable Tutor to deliver audio with question feedback, customise core/js/models/questionModel.js to add additional properties to the model when feedback is set up. For example, to have 'correct feedback' audio, take the existing `setupCorrectFeedback` function:
+For example, to enable Tutor to deliver audio with question feedback, customise [questionModel.js](https://github.com/adaptlearning/adapt_framework/blob/master/src/core/js/models/questionModel.js) to add additional properties to the model when feedback is set up. 
+
+For example, to have correct feedback audio, take the existing `setupCorrectFeedback` function:
 
 ```js
 setupCorrectFeedback: function() {
@@ -104,13 +107,13 @@ Modify the [Notify Handlebars template](https://github.com/adaptlearning/adapt_f
 ```hbs
 {{> audio-controls feedbackAudio}}
 ```
-Then edit [notifyView.js](https://github.com/adaptlearning/adapt_framework/blob/master/src/core/views/notifyView.js) and add the following to its events hash:
+Then edit [notifyView.js](https://github.com/adaptlearning/adapt_framework/blob/master/src/core/js/views/notifyView.js) and add the following to its events hash:
 ```js
 'click .audio-controls .icon':'onAudioCtrlsClick'
 ```
 Then add the matching `onAudioCtrlsClick` handler function (see above).
 
-Next, edit adapt-contrib-tutor.js to include a `feedbackAudio` property in the `alertObject`:
+Next, edit [adapt-contrib-tutor.js](https://github.com/adaptlearning/adapt-contrib-tutor/blob/master/js/adapt-contrib-tutor.js) to include a `feedbackAudio` property in the `alertObject`:
 ```js
 var alertObject = {
     title: view.model.get("feedbackTitle"),
@@ -143,8 +146,8 @@ Finally add the `_feedbackAudio` attributes to the components JSON, e.g:
 }
 ```
 
-Typically, when Tutor is invoked any audio that is playing should be stopped. To do this trigger the 'audio:stop' event on the Adapt object:
+Typically, when Tutor is invoked any audio that is playing should be stopped. To do this trigger the `'audio:stop'` event on the `Adapt` object:
 ```js
 Adapt.trigger('audio:stop');
 ```
-Equally, when Tutor is closed any audio associated with it should be stopped - which can be done by adding the above event to `closeNotify` in [notifyView.js](https://github.com/adaptlearning/adapt_framework/blob/master/src/core/views/notifyView.js)
+Equally, when Tutor is closed any audio associated with it should be stopped - which can be done by adding the above event to `closeNotify` in [notifyView.js](https://github.com/adaptlearning/adapt_framework/blob/master/src/core/js/views/notifyView.js)
