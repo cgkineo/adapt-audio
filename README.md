@@ -119,7 +119,7 @@ var alertObject = {
 };
 ```
 Finally add the `_feedbackAudio` attributes to the components JSON, e.g:
-```
+```json
 "_feedbackAudio":{
   "correct":{
     "_audio": {
