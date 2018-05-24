@@ -20,7 +20,7 @@ Add audio capability to any part of any template by specifying the audio-control
 The context (this) should have a corresponding `_audio` attribute in the relevant part of the components JSON with the following format:
 ```json
 "_audio": {
-	"mp3":"course/en/audio/audio.mp3"
+    "mp3":"course/en/audio/audio.mp3"
 }
 ```
 The audio-controls partial provides the UI which consists of a single play/pause toggle button.
