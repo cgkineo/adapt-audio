@@ -32,9 +32,9 @@ In components that will support audio, listen to the click event on the toggle b
 
 Then add a handler function for this that triggers the 'audio' event on the Adapt object, passing in the current event target, e.g:
 ```js
-onAudioCtrlsClick: function(event) {
-	if (event) event.preventDefault();
-	Adapt.trigger('audio', event.currentTarget);
+onAudioCtrlsClick: function(e) {
+    if (e) e.preventDefault();
+    Adapt.trigger('audio', e.currentTarget);
 }
 ```
 If including the audio extension in multiple components you can avoid repetition by including the event declaration and handler in ComponentView.js - just ensure that ComponentView descendant classes extend rather than override the event declaration(s).
@@ -59,9 +59,9 @@ And modify it like so:
 ```js
 setupCorrectFeedback: function() {
     this.set({
-	feedbackTitle: this.get('title'),
-	feedbackMessage: this.get("_feedback") ? this.get("_feedback").correct : "",
-	feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio").correct : {}
+        feedbackTitle: this.get('title'),
+        feedbackMessage: this.get("_feedback") ? this.get("_feedback").correct : "",
+        feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio").correct : {}
     });
 },
 ```
@@ -69,15 +69,15 @@ Similarly, for incorrect feedback audio, take the original function:
 ```js
 setupIncorrectFeedback: function() {
     if (this.get('_attemptsLeft') === 0 || this.get('_feedback') && !this.get('_feedback')._incorrect.notFinal) {
-	this.set({
-	    feedbackTitle: this.get('title'),
-	    feedbackMessage: this.get("_feedback") ? this.get('_feedback')._incorrect.final : ""
-	});
+        this.set({
+            feedbackTitle: this.get('title'),
+            feedbackMessage: this.get("_feedback") ? this.get('_feedback')._incorrect.final : ""
+        });
     } else {
-	this.set({
-	    feedbackTitle: this.get('title'),
-	    feedbackMessage: this.get("_feedback") ? this.get('_feedback')._incorrect.notFinal : ""
-	});
+        this.set({
+            feedbackTitle: this.get('title'),
+            feedbackMessage: this.get("_feedback") ? this.get('_feedback')._incorrect.notFinal : ""
+        });
     }
 },
 ```
@@ -85,17 +85,17 @@ and modify it to:
 ```js
 setupIncorrectFeedback: function() {
     if (this.get('_attemptsLeft') === 0 || this.get('_feedback') && !this.get('_feedback')._incorrect.notFinal) {
-	this.set({
-	    feedbackTitle: this.get('title'),
-	    feedbackMessage: this.get("_feedback") ? this.get('_feedback')._incorrect.final : "",
-	    feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio")._incorrect.final : {}
-	});
+        this.set({
+            feedbackTitle: this.get('title'),
+            feedbackMessage: this.get("_feedback") ? this.get('_feedback')._incorrect.final : "",
+            feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio")._incorrect.final : {}
+        });
     } else {
-	this.set({
-	    feedbackTitle: this.get('title'),
-	    feedbackMessage: this.get("_feedback") ? this.get('_feedback')._incorrect.notFinal : "",
-	    feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio")._incorrect.notFinal : {}
-	});
+        this.set({
+            feedbackTitle: this.get('title'),
+            feedbackMessage: this.get("_feedback") ? this.get('_feedback')._incorrect.notFinal : "",
+            feedbackAudio: this.get("_feedbackAudio") ? this.get("_feedbackAudio")._incorrect.notFinal : {}
+        });
     }
 },
 ```
