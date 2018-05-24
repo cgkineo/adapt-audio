@@ -6,7 +6,7 @@ An extension which provides basic audio playback capability to components.
 Installation
 ============
 
-First, be sure to install the [Adapt Command Line Interface](https://github.com/cajones/adapt-cli), then from the command line run:-
+First, be sure to install the [Adapt Command Line Interface](https://github.com/adaptlearning/adapt-cli/), then from the command line run:-
 ```bash
 $ adapt install adapt-audio
 ```
