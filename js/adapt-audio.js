@@ -1,11 +1,6 @@
-/*
- * adapt-audio
- * License - http://github.com/cgkineo/adapt_framework/LICENSE
- */
-define(function(require) {
-
-    var Adapt = require('coreJS/adapt');
-    var Backbone = require('backbone');
+define([
+    'core/js/adapt'
+], function(Adapt) {
 
     var AudioView = Backbone.View.extend({
 
@@ -13,48 +8,29 @@ define(function(require) {
 
         initialize: function() {
             this.render();
-            this.listenTo(Adapt, 'audio', this.onAudioInvoked);
-            this.listenTo(Adapt, 'audio:stop', this.onAudioStop);
 
-            if (Modernizr.audio) {
-                this.audio = new Audio();
+            this.listenTo(Adapt, {
+                'audio': this.onAudioInvoked,
+                'audio:stop': this.onAudioStop,
+                'media:stop': this.onMediaStop
+            });
 
-                $(this.audio).on('ended', _.bind(this.onAudioEnded, this));
-            } else if ($("#audioPlayer")[0] == undefined) {
-                this.embedFlashAudioPlayer();
-            }
+            this.audio = new Audio();
+
+            $(this.audio).on('ended', this.onAudioEnded.bind(this));
         },
 
         render: function() {
-            var template = Handlebars.templates["audio"]
+            var template = Handlebars.templates["audio"];
             this.$el.html(template()).appendTo('#wrapper');
             return this;
         },
 
-        embedFlashAudioPlayer: function() {
-
-            window.onFlashAudioFinished = _.bind(this.onAudioEnded, this);
-
-            var params = {
-                swliveconnect: "true",
-                allowscriptaccess: "always"
-            };
-
-            var attributes = {
-                id: "audioPlayer",
-                name: "audioPlayer"
-            };
-
-            swfobject.embedSWF("assets/audioplayer.swf", "flashPlayer", "1", "1", "8.0.22", "assets/express_install.swf", false, params, attributes);
-
-            console.log($("#audioPlayer")[0]);
-        },
-
         play: function() {
             try {
-                if (this.audio) this.audio.play();
-                else {
-                    $("#audioPlayer")[0].loadAudio(this.$active.data('mp3'));
+                if (this.audio) {
+                    Adapt.trigger('media:stop', this);// stop any media component that learner might have left playing
+                    this.audio.play();
                 }
             } catch (e) {
                 console.error("play error");
@@ -64,9 +40,6 @@ define(function(require) {
         pause: function() {
             try {
                 if (this.audio) this.audio.pause();
-                else {
-                    $("#audioPlayer")[0].controlAudio("pause");
-                }
             } catch (e) {
                 console.error("pause error");
             }
@@ -77,8 +50,6 @@ define(function(require) {
                 if (this.audio) {
                     this.audio.pause();
                     this.audio.currentTime = 0;
-                } else {
-                    $("#audioPlayer")[0].controlAudio("pause");
                 }
             } catch (e) {
                 console.error("stop error");
@@ -105,10 +76,7 @@ define(function(require) {
                 this.$active = $el;
                 this.$active.addClass('pause').removeClass('play');
 
-                if (Modernizr.audio) {
-                    if (this.audio.canPlayType('audio/ogg')) this.audio.src = this.$active.data('ogg');
-                    if (this.audio.canPlayType('audio/mpeg')) this.audio.src = this.$active.data('mp3');
-                }
+                this.audio.src = this.$active.data('mp3');
 
                 this.play();
             }
@@ -122,7 +90,6 @@ define(function(require) {
         },
 
         onAudioStop: function(el) {
-
             if (el == null || el == undefined) {
                 // console.log('stop any audio currently playing');
                 if (this.$active) {
@@ -136,6 +103,16 @@ define(function(require) {
                     this.stop();
                 }
             }
+        },
+
+        /**
+         * handler for the event broadcast by the media component (and possibly others)
+         * to tell any currently playing media to stop playback
+         */
+        onMediaStop: function (view) {
+            if (view && view.cid === this.cid) return; // if we were the originator of the event, ignore it!
+
+            this.onAudioStop();
         }
     });
 
