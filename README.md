@@ -39,6 +39,8 @@ onAudioCtrlsClick: function(e) {
 ```
 If including the audio extension in multiple components you can avoid repetition by including the event declaration and handler in ComponentView.js - just ensure that ComponentView descendant classes extend rather than override the event declaration(s).
 
+Adapt developer [Simon Date](https://github.com/simondate) has written a guide to setting up this extension that's been tailored for Adapt v5, you can access that [here](https://docs.google.com/document/d/1SPXTrLzDaxbRr05NrvDpVRVqcArmesfo7sWWQ2GFZAk/). Please [contact Simon](https://gitter.im/simondate) for any corrections to or queries about that ;-)
+
 Using with other extensions
 ===========================
 It is possible to utilise this extension with other extensions. 
