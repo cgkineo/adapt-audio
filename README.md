@@ -1,6 +1,8 @@
 adapt-audio
 ===========
 
+!!PLEASE USE [adapt-globalAudio](https://github.com/cgkineo/adapt-globalAudio) instead!!
+
 An extension which provides basic audio playback capability to components.
 
 Installation
